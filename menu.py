@@ -1,6 +1,8 @@
 # each menu has its OWN game loop
 # I also yoinked this from a tutorial
 import pygame, sys
+
+import game_loop
 from Button import Button
 
 pygame.init()
@@ -14,10 +16,6 @@ BG = pygame.image.load("assets/bg_placeholder.jpg")
 def get_font(size):
     # temporary font
     return pygame.font.Font("assets/font.ttf", size)
-
-
-def play_screen():
-    print("Play button pressed")
 
 
 def options_menu():
@@ -54,6 +52,10 @@ def options_menu():
 def pause_menu():
     # this does nothing for now
     return
+
+
+def play_screen():
+    game_loop.run_game()
 
 
 def start_menu():
