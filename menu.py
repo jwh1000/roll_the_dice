@@ -2,7 +2,7 @@
 # I also yoinked this from a tutorial
 import pygame, sys
 
-import game_loop
+from GameLoop import GameLoop
 from Button import Button
 
 pygame.init()
@@ -55,7 +55,8 @@ def pause_menu():
 
 
 def play_screen():
-    game_loop.run_game()
+    new_game = GameLoop()
+    new_game.run_game()
 
 
 def start_menu():
