@@ -17,3 +17,9 @@ class Tile(pygame.sprite.Sprite):
         # make a rectangle around the sprite image (assigned above)
         self.rect = self.image.get_rect()
 
+
+    def tile_effect(self):
+        if self.identity == 0:
+            pass
+        elif self.identity == 1:
+            pass
