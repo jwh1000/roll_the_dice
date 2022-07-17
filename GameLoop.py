@@ -63,7 +63,7 @@ class GameLoop:
         screen.blit(self.BG, (0, 0))
 
         # draw each tile
-        x_val = 4
+        x_val = 2
         index = self.PLAYER.location
         for i in range(0, self.BOARD_SIZE):
             tile = self.BOARD[index]
@@ -87,12 +87,13 @@ class GameLoop:
         self.ANIMATED_SPRITES.draw(screen)
         self.ANIMATED_SPRITES.update()
 
-    def move_tiles(self):
+    def move_tiles(self, amount_to_move):
         screen = pygame.display.get_surface()
 
-        for i in range(7):
+        while amount_to_move > 0:
             self.VISIBLE_TILES.draw(screen)
             self.VISIBLE_TILES.update()
+            amount_to_move -= 26
 
     def render_combat_UI(self):
         screen = pygame.display.get_surface()
@@ -152,7 +153,8 @@ class GameLoop:
                     pass
                 # combat tile
                 elif self.BOARD[self.PLAYER.location].identity == 1:
-                    self.start_combat()
+                    # self.start_combat()
+                    pass
             self.STANDBY = False
 
             for event in pygame.event.get():
@@ -163,9 +165,9 @@ class GameLoop:
                     if event.key == pygame.K_SPACE:
                         self.DICE.animate()
 
-                        self.move_tiles()
-
                         dice_result = self.DICE.value
+
+                        self.move_tiles(dice_result * 182)
 
                         self.STANDBY = True
 
