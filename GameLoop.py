@@ -16,7 +16,7 @@ class GameLoop:
         self.WIDTH = 1280
         self.HEIGHT = 720
         self.FPS = 60
-        self.BG = pygame.image.load("assets/bg_sky__placeholder.jpg")
+        self.BG = pygame.image.load("assets/bg.png")
 
         self.DISTANCE_TO_MOVE = 0
         self.BOARD = []
@@ -62,7 +62,7 @@ class GameLoop:
         screen.blit(self.BG, (0, 0))
 
         # draw each tile
-        x_val = 2
+        x_val = 0
         index = self.PLAYER.location
         for i in range(0, self.BOARD_SIZE):
             tile = self.BOARD[index]
@@ -71,7 +71,7 @@ class GameLoop:
             self.VISIBLE_TILES.add(tile)
 
             index += 1
-            x_val += 182
+            x_val += 180
 
         self.VISIBLE_TILES.draw(screen)
 
@@ -166,12 +166,11 @@ class GameLoop:
                     exit()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
+                        self.DICE.animate()
 
                         dice_result = self.DICE.value
 
-                        self.DICE.animate()
-
-                        self.move_tiles(dice_result * 182)
+                        self.move_tiles(dice_result * 180)
 
                         self.STANDBY = True
 

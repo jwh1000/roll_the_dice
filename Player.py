@@ -20,7 +20,7 @@ class Player(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.left = -20
-        self.rect.top = 260
+        self.rect.top = 230
 
     def update(self):
         self.current_sprite += 0.03

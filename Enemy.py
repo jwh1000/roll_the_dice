@@ -12,51 +12,51 @@ class Enemy(pygame.sprite.Sprite):
                 self.health = 10
                 self.attack = 1
                 self.name = "easy enemy"
-                self.image = pygame.image.load("assets/tile_placeholder1.jpg")
+                self.image = pygame.image.load("assets/heart_tile.png")
             elif rand_num < 8:
                 self.health = 15
                 self.attack = 1
                 self.name = "medium enemy"
-                self.image = pygame.image.load("assets/tile_placeholder2.jpg")
+                self.image = pygame.image.load("assets/sword_tile.png")
             else:
                 self.health = 6
-                self.attack = 1
+                self.attack = 2
                 self.name = "hard enemy"
-                self.image = pygame.image.load("assets/tile_placeholder3.jpg")
+                self.image = pygame.image.load("assets/blank_tile.png")
         elif location < board_size / 2:
             rand_num = random.randrange(0, 10)
             if rand_num < 3:
                 self.health = 10
                 self.attack = 1
                 self.name = "easy enemy"
-                self.image = pygame.image.load("assets/tile_placeholder1.jpg")
+                self.image = pygame.image.load("assets/heart_tile.png")
             elif rand_num < 7:
                 self.health = 15
                 self.attack = 1
                 self.name = "medium enemy"
-                self.image = pygame.image.load("assets/tile_placeholder2.jpg")
+                self.image = pygame.image.load("assets/sword_tile.png")
             else:
                 self.health = 6
-                self.attack = 1
+                self.attack = 2
                 self.name = "hard enemy"
-                self.image = pygame.image.load("assets/tile_placeholder3.jpg")
+                self.image = pygame.image.load("assets/blank_tile.png")
         else:
             rand_num = random.randrange(0, 10)
             if rand_num < 2:
                 self.health = 10
                 self.attack = 1
                 self.name = "easy enemy"
-                self.image = pygame.image.load("assets/tile_placeholder1.jpg")
+                self.image = pygame.image.load("assets/heart_tile.png")
             elif rand_num < 5:
                 self.health = 15
                 self.attack = 1
                 self.name = "medium enemy"
-                self.image = pygame.image.load("assets/tile_placeholder2.jpg")
+                self.image = pygame.image.load("assets/sword_tile.png")
             else:
                 self.health = 6
-                self.attack = 1
+                self.attack = 2
                 self.name = "hard enemy"
-                self.image = pygame.image.load("assets/tile_placeholder3.jpg")
+                self.image = pygame.image.load("assets/blank_tile.png")
 
         self.rect = self.image.get_rect()
         self.rect.right = 1276
