@@ -30,6 +30,13 @@ class GameLoop:
         self.STANDBY = False
 
         self.CLOCK = pygame.time.Clock()
+        self.FONT = pygame.font.Font("assets/font.ttf", 35)
+
+        self.PLAYER_HP_BAR_SURFACE = self.FONT.render("PLAYER HP: " + str(self.PLAYER.health),
+                                                      True, pygame.Color("white"))
+        self.ENEMY_HP_BAR_SURFACE = self.FONT.render("ENEMY HP: " + str(0),
+                                                     True, pygame.Color("white"))
+        self.MESSAGE_SURFACE = self.FONT.render("", True, pygame.Color("white"))
 
     def build_board(self):
         board = []
@@ -83,6 +90,7 @@ class GameLoop:
 
         screen = pygame.display.get_surface()
         screen.blit(self.BG, (0, 0))
+        screen.blit(self.PLAYER_HP_BAR_SURFACE, (5, 5))
 
         self.VISIBLE_TILES.draw(screen)
         self.ANIMATED_SPRITES.draw(screen)
@@ -93,6 +101,7 @@ class GameLoop:
 
         while amount_to_move > 0:
             screen.blit(self.BG, (0, 0))
+            screen.blit(self.PLAYER_HP_BAR_SURFACE, (5, 5))
 
             self.VISIBLE_TILES.draw(screen)
             self.ANIMATED_SPRITES.draw(screen)
@@ -101,17 +110,13 @@ class GameLoop:
             amount_to_move -= 2
             pygame.display.update()
 
-    def animate_dice(self):
-
-        self.DICE.animate()
-        while self.DICE.is_animating:
-            self.update_board_screen()
-
     def render_combat_UI(self):
         screen = pygame.display.get_surface()
 
         # background (color is placeholder)
         screen.blit(self.BG, (0, 0))
+        screen.blit(self.PLAYER_HP_BAR_SURFACE, (5, 5))
+        screen.blit(self.ENEMY_HP_BAR_SURFACE, (860, 5))
 
         self.COMBAT_SPRITES.draw(screen)
 
@@ -127,6 +132,9 @@ class GameLoop:
 
         self.DICE.rect.bottom = 700
 
+        self.ENEMY_HP_BAR_SURFACE = self.FONT.render("ENEMY HP: " + str(current_enemy.health),
+                                                     True, pygame.Color("white"))
+
         while running:
             self.CLOCK.tick(self.FPS)
 
@@ -140,14 +148,24 @@ class GameLoop:
                     exit()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        print(current_enemy.name)
-                        running = False
+                        if current_enemy.health >= 0:
+                            self.DICE.animate()
+
+                            dice_result = self.DICE.roll()
+
+                            current_enemy.health -= dice_result
+                            self.ENEMY_HP_BAR_SURFACE = self.FONT.render("ENEMY HP: " + str(current_enemy.health),
+                                                                         True, pygame.Color("white"))
+            self.render_combat_UI()
+
+            if current_enemy.health <= 0:
+                running = False
 
         self.COMBAT_SPRITES.empty()
 
     def run_game(self):
         self.initialize()
-        pygame.display.set_caption("TITLE")
+        pygame.display.set_caption("On The Roll!")
 
         self.ANIMATED_SPRITES.add(self.PLAYER)
         self.ANIMATED_SPRITES.add(self.DICE)
@@ -167,7 +185,7 @@ class GameLoop:
                     pass
                 # combat tile
                 elif self.BOARD[self.PLAYER.location].identity == 1:
-                    # self.start_combat()
+                    self.start_combat()
                     pass
             self.STANDBY = False
 

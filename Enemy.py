@@ -58,6 +58,15 @@ class Enemy(pygame.sprite.Sprite):
                 self.name = "hard enemy"
                 self.image = pygame.image.load("assets/rock.png")
 
+        self.message = ""
+
         self.rect = self.image.get_rect()
         self.rect.right = 1276
         self.rect.top = 260
+
+    def fight(self):
+        if self.attack == 1:
+            return random.randrange(0, 3)
+        elif self.attack == 2:
+            return random.randrange(1, 4)
+

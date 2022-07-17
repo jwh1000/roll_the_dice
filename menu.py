@@ -87,8 +87,8 @@ def start_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.check_for_input(MENU_MOUSE_POS):
                     play_screen()
-                if OPTIONS_BUTTON.check_for_input(MENU_MOUSE_POS):
-                    options_menu()
+                # if OPTIONS_BUTTON.check_for_input(MENU_MOUSE_POS):
+                #     options_menu()
                 if QUIT_BUTTON.check_for_input(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
