@@ -36,7 +36,9 @@ class GameLoop:
                                                       True, pygame.Color("white"))
         self.ENEMY_HP_BAR_SURFACE = self.FONT.render("ENEMY HP: " + str(0),
                                                      True, pygame.Color("white"))
-        self.MESSAGE_SURFACE = self.FONT.render("", True, pygame.Color("white"))
+
+        self.MESSAGE = ""
+        self.MESSAGE_SURFACE = self.FONT.render(self.MESSAGE, True, pygame.Color("white"))
 
     def build_board(self):
         board = []
@@ -90,7 +92,14 @@ class GameLoop:
 
         screen = pygame.display.get_surface()
         screen.blit(self.BG, (0, 0))
+
+        self.PLAYER_HP_BAR_SURFACE = self.FONT.render("PLAYER HP: " + str(self.PLAYER.health),
+                                                      True, pygame.Color("white"))
         screen.blit(self.PLAYER_HP_BAR_SURFACE, (5, 5))
+
+        self.MESSAGE_SURFACE = self.FONT.render(self.MESSAGE, True, pygame.Color("white"))
+        message_rect = self.MESSAGE_SURFACE.get_rect(center=(640, 360))
+        screen.blit(self.MESSAGE_SURFACE, message_rect)
 
         self.VISIBLE_TILES.draw(screen)
         self.ANIMATED_SPRITES.draw(screen)
@@ -115,8 +124,16 @@ class GameLoop:
 
         # background (color is placeholder)
         screen.blit(self.BG, (0, 0))
+
+        self.PLAYER_HP_BAR_SURFACE = self.FONT.render("PLAYER HP: " + str(self.PLAYER.health),
+                                                      True, pygame.Color("white"))
         screen.blit(self.PLAYER_HP_BAR_SURFACE, (5, 5))
+
         screen.blit(self.ENEMY_HP_BAR_SURFACE, (860, 5))
+
+        self.MESSAGE_SURFACE = self.FONT.render(self.MESSAGE, True, pygame.Color("white"))
+        message_rect = self.MESSAGE_SURFACE.get_rect(center=(640, 360))
+        screen.blit(self.MESSAGE_SURFACE, message_rect)
 
         self.COMBAT_SPRITES.draw(screen)
 
@@ -126,6 +143,7 @@ class GameLoop:
     def start_combat(self):
         pygame.display.set_caption("COMBAT")
         running = True
+        enemy_attack = False
 
         current_enemy = Enemy(self.PLAYER.location, self.BOARD_SIZE)
         self.COMBAT_SPRITES.add(current_enemy)
@@ -135,6 +153,8 @@ class GameLoop:
         self.ENEMY_HP_BAR_SURFACE = self.FONT.render("ENEMY HP: " + str(current_enemy.health),
                                                      True, pygame.Color("white"))
 
+        self.MESSAGE = "An enemy appeared!"
+
         while running:
             self.CLOCK.tick(self.FPS)
 
@@ -142,24 +162,39 @@ class GameLoop:
 
             pygame.display.update()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    exit()
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        if current_enemy.health >= 0:
-                            self.DICE.animate()
+            if not enemy_attack:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        exit()
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE:
+                            if current_enemy.health >= 0:
+                                self.DICE.animate()
 
-                            dice_result = self.DICE.roll()
+                                dice_result = self.DICE.roll()
 
-                            current_enemy.health -= dice_result
-                            self.ENEMY_HP_BAR_SURFACE = self.FONT.render("ENEMY HP: " + str(current_enemy.health),
-                                                                         True, pygame.Color("white"))
-            self.render_combat_UI()
+                                self.MESSAGE = "Dealt " + str(dice_result) + " damage!"
+
+                                current_enemy.health -= dice_result
+                                self.ENEMY_HP_BAR_SURFACE = self.FONT.render("ENEMY HP: " + str(current_enemy.health),
+                                                                             True, pygame.Color("white"))
+                                enemy_attack = True
+            else:
+                pygame.event.wait()
+                pygame.event.clear()
+                pygame.event.wait()
+                damage = current_enemy.fight()
+                self.PLAYER.health -= damage
+                self.MESSAGE = "Enemy dealt " + str(damage) + " damage!"
+                enemy_attack = False
+                print(self.PLAYER.health)
 
             if current_enemy.health <= 0:
+                self.MESSAGE = "Defeated the enemy!"
                 running = False
+
+            self.render_combat_UI()
 
         self.COMBAT_SPRITES.empty()
 
@@ -182,7 +217,11 @@ class GameLoop:
                     pass
                 # gold tile
                 elif self.BOARD[self.PLAYER.location].identity == 0:
-                    pass
+                    heal = self.PLAYER.heal()
+                    self.MESSAGE = "Healed " + str(heal) + "!"
+                    self.PLAYER.health += heal
+
+
                 # combat tile
                 elif self.BOARD[self.PLAYER.location].identity == 1:
                     self.start_combat()
@@ -195,9 +234,12 @@ class GameLoop:
                     exit()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
+
                         self.DICE.animate()
 
                         dice_result = self.DICE.roll()
+
+                        self.MESSAGE = "Rolled a " + str(dice_result) + "!"
 
                         self.move_tiles(dice_result * 180)
 

@@ -66,7 +66,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def fight(self):
         if self.attack == 1:
-            return random.randrange(0, 3)
+            return random.randrange(1, 5)
         elif self.attack == 2:
-            return random.randrange(1, 4)
+            return random.randrange(3, 8)
 

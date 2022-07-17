@@ -1,6 +1,8 @@
+import random
+
 import pygame
 
-BASE_HP = 20
+BASE_HP = 30
 
 
 class Player(pygame.sprite.Sprite):
@@ -29,3 +31,6 @@ class Player(pygame.sprite.Sprite):
             self.current_sprite = 0
 
         self.image = self.sprites[int(self.current_sprite)]
+
+    def heal(self):
+        return random.randrange(1,4)
