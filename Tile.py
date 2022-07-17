@@ -35,3 +35,6 @@ class Tile(pygame.sprite.Sprite):
         else:
             self.image = pygame.image.load("assets/tile_placeholder_end.jpg")
             self.identity = -1
+
+    def update(self):
+        print("updated tiles")
