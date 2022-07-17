@@ -41,8 +41,11 @@ class Dice(pygame.sprite.Sprite):
 
     def animate(self):
         self.is_animating = True
-        self.value = random.randrange(1, 7)
         self.loops = 2
+
+    def roll(self):
+        self.value = random.randrange(1, 7)
+        return self.value
 
     def update(self):
         if self.is_animating and self.loops > 0:

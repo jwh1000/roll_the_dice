@@ -79,6 +79,8 @@ class GameLoop:
         self.ANIMATED_SPRITES.update()
 
     def update_board_screen(self):
+        self.DICE.rect.top = 20
+
         screen = pygame.display.get_surface()
         screen.blit(self.BG, (0, 0))
 
@@ -90,10 +92,20 @@ class GameLoop:
         screen = pygame.display.get_surface()
 
         while amount_to_move > 0:
+            screen.blit(self.BG, (0, 0))
+
             self.VISIBLE_TILES.draw(screen)
+            self.ANIMATED_SPRITES.draw(screen)
             self.VISIBLE_TILES.update()
+            self.ANIMATED_SPRITES.update()
             amount_to_move -= 2
             pygame.display.update()
+
+    def animate_dice(self):
+
+        self.DICE.animate()
+        while self.DICE.is_animating:
+            self.update_board_screen()
 
     def render_combat_UI(self):
         screen = pygame.display.get_surface()
@@ -113,15 +125,14 @@ class GameLoop:
         current_enemy = Enemy(self.PLAYER.location, self.BOARD_SIZE)
         self.COMBAT_SPRITES.add(current_enemy)
 
+        self.DICE.rect.bottom = 700
+
         while running:
             self.CLOCK.tick(self.FPS)
 
             self.render_combat_UI()
 
             pygame.display.update()
-
-            while self.DICE.is_animating:
-                print("Waiting...")
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -168,7 +179,7 @@ class GameLoop:
                     if event.key == pygame.K_SPACE:
                         self.DICE.animate()
 
-                        dice_result = self.DICE.value
+                        dice_result = self.DICE.roll()
 
                         self.move_tiles(dice_result * 180)
 
