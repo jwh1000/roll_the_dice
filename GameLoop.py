@@ -1,5 +1,7 @@
 import pygame
 import random
+
+from Dice import Dice
 from Tile import Tile
 from Player import Player
 from Enemy import Enemy
@@ -20,10 +22,12 @@ class GameLoop:
         self.BOARD_SIZE = 100
         self.VISIBLE_TILES = pygame.sprite.Group()
         self.COMBAT_SPRITES = pygame.sprite.Group()
-        self.OTHER_SPRITES = pygame.sprite.Group()
+        self.ANIMATED_SPRITES = pygame.sprite.Group()
         self.PLAYER = Player()
+        self.DICE = Dice()
         self.TURN_COUNT = 0
         self.STANDBY = False
+        self.ACCEPT_INPUT = True
 
         self.CLOCK = pygame.time.Clock()
 
@@ -72,8 +76,8 @@ class GameLoop:
         self.VISIBLE_TILES.draw(screen)
         self.VISIBLE_TILES.empty()
 
-        self.OTHER_SPRITES.draw(screen)
-        self.OTHER_SPRITES.update()
+        self.ANIMATED_SPRITES.draw(screen)
+        self.ANIMATED_SPRITES.update()
 
     def render_combat_UI(self):
         screen = pygame.display.get_surface()
@@ -83,8 +87,8 @@ class GameLoop:
 
         self.COMBAT_SPRITES.draw(screen)
 
-
-
+        self.ANIMATED_SPRITES.draw(screen)
+        self.ANIMATED_SPRITES.update()
 
     def start_combat(self):
         pygame.display.set_caption("COMBAT")
@@ -115,7 +119,8 @@ class GameLoop:
         self.initialize()
         pygame.display.set_caption("TITLE")
 
-        self.OTHER_SPRITES.add(self.PLAYER)
+        self.ANIMATED_SPRITES.add(self.PLAYER)
+        self.ANIMATED_SPRITES.add(self.DICE)
 
         while True:
             self.CLOCK.tick(self.FPS)
@@ -144,6 +149,7 @@ class GameLoop:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         dice_result = roll_dice()
+                        self.DICE.animate()
                         self.STANDBY = True
                         print("rolled a " + str(dice_result))
                         print(self.PLAYER.location)

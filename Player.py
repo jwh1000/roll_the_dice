@@ -23,7 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.top = 260
 
     def update(self):
-        self.current_sprite += 0.05
+        self.current_sprite += 0.03
 
         if self.current_sprite >= len(self.sprites):
             self.current_sprite = 0
