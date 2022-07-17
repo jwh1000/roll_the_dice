@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 
@@ -6,6 +8,7 @@ class Dice(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.is_animating = False
         self.loops = 2
+        self.value = 0
 
         self.number_sprites = []
         self.number_sprites.append(pygame.image.load("assets/1.png"))
@@ -38,6 +41,7 @@ class Dice(pygame.sprite.Sprite):
 
     def animate(self):
         self.is_animating = True
+        self.value = random.randrange(1, 7)
         self.loops = 2
 
     def update(self):
@@ -49,3 +53,6 @@ class Dice(pygame.sprite.Sprite):
                 self.loops -= 1
 
             self.image = self.animation_sprites[int(self.current_sprite)]
+
+        else:
+            self.image = self.number_sprites[self.value - 1]

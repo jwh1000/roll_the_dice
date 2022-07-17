@@ -148,8 +148,8 @@ class GameLoop:
                     exit()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        dice_result = roll_dice()
                         self.DICE.animate()
+                        dice_result = self.DICE.value
                         self.STANDBY = True
                         print("rolled a " + str(dice_result))
                         print(self.PLAYER.location)

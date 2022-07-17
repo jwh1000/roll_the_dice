@@ -36,4 +36,4 @@ class Tile(pygame.sprite.Sprite):
         self.is_animating = True
 
     def update(self):
-        print("updated tiles")
+        pass
