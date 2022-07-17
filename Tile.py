@@ -6,6 +6,8 @@ class Tile(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
 
+        self.is_animating = False
+
         self.identity = random.randrange(0, 3)
         # gold tile
         if self.identity == 0:
@@ -22,12 +24,6 @@ class Tile(pygame.sprite.Sprite):
         self.rect.centerx = 93
         self.rect.top = 497
 
-    def tile_effect(self):
-        if self.identity == 0:
-            pass
-        elif self.identity == 1:
-            pass
-
     def override_identity(self, type):
         if not type:
             self.image = pygame.image.load("assets/tile_placeholder3.jpg")
@@ -35,6 +31,9 @@ class Tile(pygame.sprite.Sprite):
         else:
             self.image = pygame.image.load("assets/tile_placeholder_end.jpg")
             self.identity = -1
+
+    def animate(self):
+        self.is_animating = True
 
     def update(self):
         print("updated tiles")

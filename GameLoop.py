@@ -2,6 +2,7 @@ import pygame
 import random
 from Tile import Tile
 from Player import Player
+from Enemy import Enemy
 
 
 def roll_dice():
@@ -17,10 +18,14 @@ class GameLoop:
 
         self.BOARD = []
         self.BOARD_SIZE = 100
-        self.VISIBLE_SPRITES = pygame.sprite.Group()
+        self.VISIBLE_TILES = pygame.sprite.Group()
+        self.COMBAT_SPRITES = pygame.sprite.Group()
+        self.OTHER_SPRITES = pygame.sprite.Group()
         self.PLAYER = Player()
         self.TURN_COUNT = 0
         self.STANDBY = False
+
+        self.CLOCK = pygame.time.Clock()
 
     def build_board(self):
         board = []
@@ -48,47 +53,77 @@ class GameLoop:
         self.BOARD = self.build_board()
 
     # draws the whole board (off screen)
-    def render_static_screen(self):
+    def render_board_screen(self):
         screen = pygame.display.get_surface()
-
-        # background (color is placeholder)
         screen.blit(self.BG, (0, 0))
 
         # draw each tile
         x_val = 94
         index = self.PLAYER.location
-
         for i in range(0, 7):
             tile = self.BOARD[index]
             tile.rect.centerx = x_val
 
-            self.VISIBLE_SPRITES.add(tile)
+            self.VISIBLE_TILES.add(tile)
 
             index += 1
             x_val += 182
 
-        self.VISIBLE_SPRITES.draw(screen)
-        self.VISIBLE_SPRITES.empty()
+        self.VISIBLE_TILES.draw(screen)
+        self.VISIBLE_TILES.empty()
+
+        self.OTHER_SPRITES.draw(screen)
+        self.OTHER_SPRITES.update()
+
+    def render_combat_UI(self):
+        screen = pygame.display.get_surface()
+
+        # background (color is placeholder)
+        screen.blit(self.BG, (0, 0))
+
+        self.COMBAT_SPRITES.draw(screen)
+
+
+
 
     def start_combat(self):
         pygame.display.set_caption("COMBAT")
         running = True
 
+        current_enemy = Enemy(self.PLAYER.location, self.BOARD_SIZE)
+        self.COMBAT_SPRITES.add(current_enemy)
+
         while running:
+            self.CLOCK.tick(self.FPS)
+
+            self.render_combat_UI()
+
+            pygame.display.update()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        print("Breaking")
+                        print(current_enemy.name )
                         running = False
+
+        self.COMBAT_SPRITES.empty()
 
     def run_game(self):
         self.initialize()
         pygame.display.set_caption("TITLE")
 
+        self.OTHER_SPRITES.add(self.PLAYER)
+
         while True:
+            self.CLOCK.tick(self.FPS)
+
+            self.render_board_screen()
+
+            pygame.display.update()
+
             # check current tile's identity:
             # blank tile
             if self.STANDBY:
@@ -113,7 +148,3 @@ class GameLoop:
                         print("rolled a " + str(dice_result))
                         print(self.PLAYER.location)
                         self.PLAYER.location += dice_result
-
-            self.render_static_screen()
-
-            pygame.display.update()
