@@ -18,6 +18,7 @@ class GameLoop:
         self.FPS = 60
         self.BG = pygame.image.load("assets/bg_sky__placeholder.jpg")
 
+        self.DISTANCE_TO_MOVE = 0
         self.BOARD = []
         self.BOARD_SIZE = 100
         self.VISIBLE_TILES = pygame.sprite.Group()
@@ -42,7 +43,7 @@ class GameLoop:
             tile = Tile()
             board.append(tile)
 
-        for i in range(0, 15):
+        for i in range(0, 20):
             tile = Tile()
             tile.override_identity(True)
             board.append(tile)
@@ -57,16 +58,16 @@ class GameLoop:
         self.BOARD = self.build_board()
 
     # draws the whole board (off screen)
-    def render_board_screen(self):
+    def init_board_screen(self):
         screen = pygame.display.get_surface()
         screen.blit(self.BG, (0, 0))
 
         # draw each tile
-        x_val = 94
+        x_val = 4
         index = self.PLAYER.location
-        for i in range(0, 7):
+        for i in range(0, self.BOARD_SIZE):
             tile = self.BOARD[index]
-            tile.rect.centerx = x_val
+            tile.rect.left = x_val
 
             self.VISIBLE_TILES.add(tile)
 
@@ -74,10 +75,24 @@ class GameLoop:
             x_val += 182
 
         self.VISIBLE_TILES.draw(screen)
-        self.VISIBLE_TILES.empty()
 
         self.ANIMATED_SPRITES.draw(screen)
         self.ANIMATED_SPRITES.update()
+
+    def update_board_screen(self):
+        screen = pygame.display.get_surface()
+        screen.blit(self.BG, (0, 0))
+
+        self.VISIBLE_TILES.draw(screen)
+        self.ANIMATED_SPRITES.draw(screen)
+        self.ANIMATED_SPRITES.update()
+
+    def move_tiles(self):
+        screen = pygame.display.get_surface()
+
+        for i in range(7):
+            self.VISIBLE_TILES.draw(screen)
+            self.VISIBLE_TILES.update()
 
     def render_combat_UI(self):
         screen = pygame.display.get_surface()
@@ -110,7 +125,7 @@ class GameLoop:
                     exit()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        print(current_enemy.name )
+                        print(current_enemy.name)
                         running = False
 
         self.COMBAT_SPRITES.empty()
@@ -122,12 +137,10 @@ class GameLoop:
         self.ANIMATED_SPRITES.add(self.PLAYER)
         self.ANIMATED_SPRITES.add(self.DICE)
 
+        self.init_board_screen()
+
         while True:
             self.CLOCK.tick(self.FPS)
-
-            self.render_board_screen()
-
-            pygame.display.update()
 
             # check current tile's identity:
             # blank tile
@@ -149,8 +162,15 @@ class GameLoop:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         self.DICE.animate()
+
+                        self.move_tiles()
+
                         dice_result = self.DICE.value
+
                         self.STANDBY = True
-                        print("rolled a " + str(dice_result))
-                        print(self.PLAYER.location)
+
                         self.PLAYER.location += dice_result
+
+            self.update_board_screen()
+
+            pygame.display.update()

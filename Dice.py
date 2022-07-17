@@ -56,3 +56,4 @@ class Dice(pygame.sprite.Sprite):
 
         else:
             self.image = self.number_sprites[self.value - 1]
+            self.is_animating = False

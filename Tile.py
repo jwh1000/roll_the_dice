@@ -7,6 +7,7 @@ class Tile(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         self.is_animating = False
+        self.distance_to_move = 0
 
         self.identity = random.randrange(0, 3)
         # gold tile
@@ -32,8 +33,5 @@ class Tile(pygame.sprite.Sprite):
             self.image = pygame.image.load("assets/tile_placeholder_end.jpg")
             self.identity = -1
 
-    def animate(self):
-        self.is_animating = True
-
     def update(self):
-        pass
+        self.rect.left -= 26
