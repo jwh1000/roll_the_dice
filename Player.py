@@ -12,8 +12,8 @@ class Player(pygame.sprite.Sprite):
         self.money = 0
 
         self.sprites = []
-        self.sprites.append(pygame.image.load("assets/main_character1.png"))
-        self.sprites.append(pygame.image.load("assets/main_character2.png"))
+        self.sprites.append(pygame.image.load("assets/cup_h1.png"))
+        self.sprites.append(pygame.image.load("assets/cup_h2.png"))
 
         self.current_sprite = 0
         self.image = self.sprites[self.current_sprite]
