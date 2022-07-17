@@ -34,4 +34,4 @@ class Tile(pygame.sprite.Sprite):
             self.identity = -1
 
     def update(self):
-        self.rect.left -= 26
+        self.rect.left -= 2

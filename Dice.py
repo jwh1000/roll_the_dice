@@ -42,7 +42,6 @@ class Dice(pygame.sprite.Sprite):
     def animate(self):
         self.is_animating = True
         self.value = random.randrange(1, 7)
-        self.value = 1
         self.loops = 2
 
     def update(self):

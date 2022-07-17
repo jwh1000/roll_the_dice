@@ -28,7 +28,6 @@ class GameLoop:
         self.DICE = Dice()
         self.TURN_COUNT = 0
         self.STANDBY = False
-        self.ACCEPT_INPUT = True
 
         self.CLOCK = pygame.time.Clock()
 
@@ -93,7 +92,8 @@ class GameLoop:
         while amount_to_move > 0:
             self.VISIBLE_TILES.draw(screen)
             self.VISIBLE_TILES.update()
-            amount_to_move -= 26
+            amount_to_move -= 2
+            pygame.display.update()
 
     def render_combat_UI(self):
         screen = pygame.display.get_surface()
@@ -119,6 +119,9 @@ class GameLoop:
             self.render_combat_UI()
 
             pygame.display.update()
+
+            while self.DICE.is_animating:
+                print("Waiting...")
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -163,9 +166,10 @@ class GameLoop:
                     exit()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        self.DICE.animate()
 
                         dice_result = self.DICE.value
+
+                        self.DICE.animate()
 
                         self.move_tiles(dice_result * 182)
 
