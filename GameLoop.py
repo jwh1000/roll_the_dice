@@ -1,6 +1,9 @@
+import sys
+
 import pygame
 import random
 
+from Button import Button
 from Dice import Dice
 from Tile import Tile
 from Player import Player
@@ -20,7 +23,7 @@ class GameLoop:
 
         self.DISTANCE_TO_MOVE = 0
         self.BOARD = []
-        self.BOARD_SIZE = 100
+        self.BOARD_SIZE = 10
         self.VISIBLE_TILES = pygame.sprite.Group()
         self.COMBAT_SPRITES = pygame.sprite.Group()
         self.ANIMATED_SPRITES = pygame.sprite.Group()
@@ -64,6 +67,7 @@ class GameLoop:
         pygame.font.init()
 
         self.BOARD = self.build_board()
+        self.PLAYER = Player()
 
     # draws the whole board (off screen)
     def init_board_screen(self):
@@ -194,9 +198,45 @@ class GameLoop:
                 self.MESSAGE = "Defeated the enemy!"
                 running = False
 
+            if self.PLAYER.health <= 0:
+                self.game_over()
+
             self.render_combat_UI()
 
         self.COMBAT_SPRITES.empty()
+
+    def game_over(self):
+        screen = pygame.display.get_surface()
+
+        while True:
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+            self.DICE.rect.top = 20
+
+            screen = pygame.display.get_surface()
+            screen.blit(pygame.image.load("assets/bg_placeholder.jpg"), (0, 0))
+
+            self.MESSAGE_SURFACE = self.FONT.render("Game Over...", True, pygame.Color("white"))
+            message_rect = self.MESSAGE_SURFACE.get_rect(center=(640, 360))
+            screen.blit(self.MESSAGE_SURFACE, message_rect)
+
+            BACK_BUTTON = Button(image=pygame.image.load("assets/quit_button_placeholder.jpg"), pos=(640, 600),
+                                 text_input="RETRY (doesnt work)", font=self.FONT, base_color="#d7fcd4", hovering_color="White")
+
+            for button in [BACK_BUTTON]:
+                button.change_color(MENU_MOUSE_POS)
+                button.update(screen)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if BACK_BUTTON.check_for_input(MENU_MOUSE_POS):
+                        self.run_game()
+
+            pygame.display.update()
+
+            pygame.display.update()
 
     def run_game(self):
         self.initialize()
@@ -247,6 +287,17 @@ class GameLoop:
 
                         self.PLAYER.location += dice_result
 
-            self.update_board_screen()
+            if self.PLAYER.health <= 0:
+                self.game_over()
 
+            if self.PLAYER.location > self.BOARD_SIZE:
+                self.MESSAGE = "You win!"
+                self.update_board_screen()
+                pygame.display.update()
+                pygame.event.wait()
+                pygame.event.clear()
+                pygame.event.wait()
+                sys.exit()
+
+            self.update_board_screen()
             pygame.display.update()
